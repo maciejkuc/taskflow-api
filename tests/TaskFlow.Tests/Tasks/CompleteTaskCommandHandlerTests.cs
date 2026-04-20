@@ -56,5 +56,6 @@ public class CompleteTaskCommandHandlerTests
 
         // Assert
         taskItem.IsCompleted.Should().BeTrue();
+        await _taskItemRepository.Received(1).UpdateAsync(taskItem, Arg.Any<CancellationToken>());
     }
 }
