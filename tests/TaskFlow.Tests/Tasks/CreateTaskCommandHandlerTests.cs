@@ -68,6 +68,7 @@ public class CreateTaskCommandHandlerTests
         _logger.ReceivedCalls()
             .Should().ContainSingle(c =>
                 c.GetMethodInfo().Name == "Log" &&
-                LogLevel.Information.Equals(c.GetArguments()[0]));
+                LogLevel.Information.Equals(c.GetArguments()[0]) &&
+                c.GetArguments()[2]!.ToString() == $"Task created with Id {createdTask.Id} for Project {command.ProjectId}");
     }
 }
