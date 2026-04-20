@@ -1,0 +1,12 @@
+{
+  "hooks": [
+    {
+      "event": "agentStop",
+      "command": {
+        "windows": "powershell -ExecutionPolicy Bypass -File .github/hooks/quality-gate.ps1",
+        "linux":   "bash .github/hooks/quality-gate.sh",
+        "mac":     "bash .github/hooks/quality-gate.sh"
+      }
+    }
+  ]
+}

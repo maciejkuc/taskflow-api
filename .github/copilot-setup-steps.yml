@@ -1,0 +1,15 @@
+steps:
+  - name: Setup .NET 9
+    uses: actions/setup-dotnet@v4
+    with:
+      dotnet-version: '9.0.x'
+
+  - name: Restore packages
+    run: dotnet restore TaskFlow.sln
+
+  - name: Build
+    run: dotnet build TaskFlow.sln --no-restore
+
+  - name: Run tests (baseline)
+    run: dotnet test TaskFlow.sln --no-build --verbosity normal
+    continue-on-error: true
