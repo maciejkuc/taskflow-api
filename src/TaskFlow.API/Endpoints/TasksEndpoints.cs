@@ -8,7 +8,9 @@ public static class TasksEndpoints
 {
     public static IEndpointRouteBuilder MapTasksEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/projects/{projectId:int}/tasks", async (int projectId, ISender sender, CancellationToken cancellationToken) =>
+        var projectsGroup = app.MapGroup("/api/projects");
+
+        projectsGroup.MapGet("/{projectId:int}/tasks", async (int projectId, ISender sender, CancellationToken cancellationToken) =>
         {
             var result = await sender.Send(new GetTasksByProjectQuery(projectId), cancellationToken);
             return result.Status switch
@@ -19,7 +21,7 @@ public static class TasksEndpoints
             };
         });
 
-        app.MapPost("/api/projects/{projectId:int}/tasks", async (int projectId, CreateTaskRequest request, ISender sender, CancellationToken cancellationToken) =>
+        projectsGroup.MapPost("/{projectId:int}/tasks", async (int projectId, CreateTaskRequest request, ISender sender, CancellationToken cancellationToken) =>
         {
             var command = new CreateTaskCommand(projectId, request.Title);
             var result = await sender.Send(command, cancellationToken);
@@ -33,7 +35,9 @@ public static class TasksEndpoints
             };
         });
 
-        app.MapPut("/api/tasks/{id:int}/complete", async (int id, ISender sender, CancellationToken cancellationToken) =>
+        var tasksGroup = app.MapGroup("/api/tasks");
+
+        tasksGroup.MapPut("/{id:int}/complete", async (int id, ISender sender, CancellationToken cancellationToken) =>
         {
             var result = await sender.Send(new CompleteTaskCommand(id), cancellationToken);
             return result.Status switch
