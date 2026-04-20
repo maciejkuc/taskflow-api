@@ -11,7 +11,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        var connectionString = config.GetConnectionString("DefaultConnection") ?? "Data Source=taskflow.db";
+        var connectionString = config.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
 
         services.AddDbContext<TaskFlowDbContext>(options => options.UseSqlite(connectionString));
         services.AddScoped<IProjectRepository, ProjectRepository>();
