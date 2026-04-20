@@ -2,6 +2,7 @@ using Ardalis.Result;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using NSubstitute.Core;
 using TaskFlow.Application.Tasks;
 using TaskFlow.Domain.Entities;
 using TaskFlow.Domain.Interfaces;
@@ -48,5 +49,25 @@ public class CreateTaskCommandHandlerTests
 
         // Assert
         result.Status.Should().Be(ResultStatus.NotFound);
+    }
+
+    [Fact]
+    public async Task Handle_WhenTaskCreatedSuccessfully_ShouldLogInformation()
+    {
+        // Arrange
+        var command = new CreateTaskCommand(1, "My Task");
+        var project = new Project("Test Project", null);
+        var createdTask = new TaskItem("My Task", 1);
+        _projectRepository.GetByIdAsync(1, Arg.Any<CancellationToken>()).Returns(project);
+        _taskItemRepository.AddAsync(Arg.Any<TaskItem>(), Arg.Any<CancellationToken>()).Returns(createdTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _logger.ReceivedCalls()
+            .Should().ContainSingle(c =>
+                c.GetMethodInfo().Name == "Log" &&
+                LogLevel.Information.Equals(c.GetArguments()[0]));
     }
 }
