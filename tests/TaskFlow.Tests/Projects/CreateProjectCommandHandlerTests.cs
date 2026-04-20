@@ -1,5 +1,6 @@
 using Ardalis.Result;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using TaskFlow.Application.Projects;
 using TaskFlow.Domain.Entities;
@@ -10,9 +11,10 @@ namespace TaskFlow.Tests.Projects;
 public class CreateProjectCommandHandlerTests
 {
     private readonly IProjectRepository _projectRepository = Substitute.For<IProjectRepository>();
+    private readonly ILogger<CreateProjectCommandHandler> _logger = Substitute.For<ILogger<CreateProjectCommandHandler>>();
     private readonly CreateProjectCommandHandler _sut;
 
-    public CreateProjectCommandHandlerTests() => _sut = new CreateProjectCommandHandler(_projectRepository);
+    public CreateProjectCommandHandlerTests() => _sut = new CreateProjectCommandHandler(_projectRepository, _logger);
 
     [Fact]
     public async Task Handle_WhenValidCommand_ShouldReturnSuccessWithProjectId()
